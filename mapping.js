@@ -51,21 +51,22 @@ async function DisplayUniversities () {
  
 
   const { data, error } = await mySupabase
-    .from("Universities")
+    .from("universities")
     .select("*")
     
- console.log()
+ console.log("error:", error);
   //for each record create pin point
   data.forEach(item => {
 
    
 
     const marker = L.marker([item.latitude, item.longitude], {
-      icon: geticon("red"),
+      icon: geticon(item.guardian_rank_2026),
       title: item.name
     }).addTo(map)
       .bindTooltip(item.name, { permanent: false })
-      .bindPopup(`Description:${item.description}
+      .bindPopup(`Description:${item.description} <br>
+                  Ranking:${item.guardian_rank_2026}
           `);
 
     markers.push(marker); //adds to marker so can be removed when update btn pressen
@@ -74,27 +75,37 @@ async function DisplayUniversities () {
 }
 
 
-function geticon(type) {
-  return L.icon({
-    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${type}.png`,
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-}
 
-const buttonclear = document.getElementById("clear_btn");
-
-if (buttonclear) {
-  buttonclear.addEventListener("click", async (e) => {
-    clearmap()
-  });
-}
-
-
-function clearmap() {
-  markers.forEach(m => map.removeLayer(m)); // removes any current markers on map
-  markers = [];
+//creates leaflet icon object for specified colour
+function geticon(ranking) {
+  if (ranking <= 30) {
+    return L.icon({
+      iconUrl: `markers/location-pin-icon-gold_22187384.png`,
+      shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+  }
+  else if (ranking <= 60) {
+    return L.icon({
+      iconUrl: `markers/location-pin-icon-silver_22062080.png`,
+      shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+  }
+  else {
+    return L.icon({
+      iconUrl: `markers/location-pin-icon-bronze_22187384.png`,
+      shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+  }
 }
